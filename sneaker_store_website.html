@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sneaker Store</title>
+
+  <!-- Digital Data Layer for Adobe Analytics -->
   <script>
     window.digitalData = {
       page: {
@@ -37,10 +39,48 @@
           price: 130,
           category: "Sneakers"
         }
-      ]
+      ],
+      events: []
     };
+
+    function trackClick(eventName, elementId, customData = {}) {
+      const event = {
+        event: eventName,
+        elementId: elementId,
+        timestamp: new Date().toISOString(),
+        ...customData
+      };
+      digitalData.events.push(event);
+      console.log("Event tracked:", event);
+    }
+
+    // Optional: DOM is ready
+    document.addEventListener("DOMContentLoaded", () => {
+      // Track nav link clicks
+      document.querySelectorAll("nav a").forEach(link => {
+        link.addEventListener("click", () => {
+          trackClick("navLinkClick", link.textContent.trim(), {
+            linkTarget: link.getAttribute("href")
+          });
+        });
+      });
+
+      // Track product clicks
+      document.querySelectorAll(".product").forEach((product, index) => {
+        product.addEventListener("click", () => {
+          const prod = digitalData.products[index];
+          trackClick("productClick", prod.productID, {
+            productName: prod.productName,
+            price: prod.price,
+            category: prod.category
+          });
+        });
+      });
+    });
   </script>
+
   <script src="https://assets.adobedtm.com/21b53c73144b/f940b02f6357/launch-90013ed4d575-development.min.js" async></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -95,6 +135,12 @@
       padding: 20px;
       border-radius: 8px;
       text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .product:hover {
+      transform: scale(1.02);
+      background-color: #ddd;
     }
     .product img {
       max-width: 100%;
@@ -111,9 +157,6 @@
   </style>
 </head>
 <body>
-
-  <!-- DigitalData Layer for Adobe Analytics -->
-  
 
   <header>
     <h1>Sneaker Store</h1>
@@ -166,4 +209,3 @@
   </footer>
 </body>
 </html>
-
