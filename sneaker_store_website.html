@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sneaker Store</title>
 
-  <!-- Digital Data Layer for Adobe Analytics -->
+  <!-- Digital Data Layer -->
   <script>
     window.digitalData = {
       page: {
@@ -50,36 +50,35 @@
         timestamp: new Date().toISOString(),
         ...customData
       };
+
       digitalData.events.push(event);
-      console.log("Event tracked:", event);
+      console.log("📦 Digital Data Event Fired:", event);
     }
 
-    // Optional: DOM is ready
-    document.addEventListener("DOMContentLoaded", () => {
-      // Track nav link clicks
+    // Ensure click tracking after DOM is ready
+    document.addEventListener("DOMContentLoaded", function () {
+      // Nav Links
       document.querySelectorAll("nav a").forEach(link => {
-        link.addEventListener("click", () => {
-          trackClick("navLinkClick", link.textContent.trim(), {
+        link.addEventListener("click", function () {
+          trackClick("navClick", link.textContent.trim(), {
             linkTarget: link.getAttribute("href")
           });
         });
       });
 
-      // Track product clicks
+      // Products
       document.querySelectorAll(".product").forEach((product, index) => {
-        product.addEventListener("click", () => {
-          const prod = digitalData.products[index];
-          trackClick("productClick", prod.productID, {
-            productName: prod.productName,
-            price: prod.price,
-            category: prod.category
+        product.addEventListener("click", function () {
+          const productData = digitalData.products[index];
+          trackClick("productClick", productData.productID, {
+            productName: productData.productName,
+            price: productData.price,
+            category: productData.category
           });
         });
       });
     });
   </script>
-
-  <script src="https://assets.adobedtm.com/21b53c73144b/f940b02f6357/launch-90013ed4d575-development.min.js" async></script>
 
   <style>
     body {
